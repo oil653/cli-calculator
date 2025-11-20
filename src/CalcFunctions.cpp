@@ -17,10 +17,11 @@ namespace CalcFunctions {
 
     void PrintHelp() {
         std::cout << "Calculator thingy - a simple cli calculator\n" << std::endl;
-        std::cout << "Supported operators: + - / * ( )" << std::endl;
-        std::cout << "Additional info:\n\t\tBoth . and , are supported for decimal markers"
+        std::cout << "Supported operators: + - / * ^ ( )" << std::endl;
+        std::cout << "Additional info:\n\t\tWhitespace doesn't matter"
+                     "\n\t\tBoth . and , are supported for decimal markers"
                      "\n\t\tA decimal marker without a number before it is interpreted as 0.x"
-                     "\n\t\tWhitespace doesn't matter"
+                     "\n\t\tIf between a number and a parenthesis, there is no operator, it's interpreted as a multiplication"
         << std::endl;
     }
 
@@ -46,9 +47,11 @@ namespace CalcFunctions {
         }
 
         // Tokenise the string, make it postfix, evaluate it
-        double result {0};
+        long double result {0};
+        std::vector<std::string> tokenized;
         try {
-             result = StrProcessing::EvalPostfix(StrProcessing::InfixToPostfix(StrProcessing::Tokenize(input)));
+            tokenized = StrProcessing::Tokenize(input);
+            result = StrProcessing::EvalPostfix(StrProcessing::InfixToPostfix(tokenized));
         } catch (StrProcessing::DivisionByZeroError &e) {
             std::cout << RED << e.what() << RESET << std::endl;
             return Failed;
@@ -56,7 +59,10 @@ namespace CalcFunctions {
             std::cout << RED << e.what() << RESET << std::endl;
         }
 
-        std::cout << input << "= " <<  result << std::endl;
+        for (int i = 0; i < tokenized.size(); i++) {
+            std::cout << tokenized[i] << ' ';
+        }
+        std::cout << "= " << result << std::endl;
 
         return 0;
     }

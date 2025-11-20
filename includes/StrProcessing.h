@@ -87,10 +87,10 @@ namespace StrProcessing {
         std::vector<std::string> InfixToPostfix(const std::vector<std::string> &vec);
 
         // Evaluating the postfix notation
-        double EvalPostfix (const std::vector<std::string> &vec);
+        long double EvalPostfix (const std::vector<std::string> &vec);
 
         // Solve a mathematical operation between 2 numbers
-        double Solve (double a, double b, char op);
+        long double Solve (long double a, long double b, char op);
 }
 
 #endif

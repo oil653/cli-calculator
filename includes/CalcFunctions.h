@@ -8,14 +8,14 @@ namespace CalcFunctions {
     // Get input from the user
     std::string GetInput();
 
+    // A simple function that prints helps and supported operators
+    void PrintHelp();
+
     // Process the inputs, and print the result
     int ProcessInput(std::string &input);
 
     // A loop that runs until user exits, and calls ProcessInput
     int CalcLoop();
-
-    // A simple function that prints helps and supported operators
-    void PrintHelp();
 }
 
 #endif

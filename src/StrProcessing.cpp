@@ -1,5 +1,7 @@
 #include "../includes/StrProcessing.h"
 
+#include <cmath>
+
 namespace StrProcessing {
     // Remove all whitespaces from a string
     std::string &RemoveWhitespace(std::string &str) {
@@ -29,12 +31,14 @@ namespace StrProcessing {
 
     // Returns if a string only contains valid characters
     bool ContainsInvalidChars(const std::string &str) {
-        return std::ranges::any_of(str.begin(), str.end(), [](unsigned char c) {return c < '(' || c > '9';});
+        return std::ranges::any_of(str.begin(), str.end(), [](unsigned char c) {
+            return (c < '(' || c > '9') && c != '^';
+        });
     }
 
     // Returns if a char is a supported operator or a parenthesis
     bool IsOperator(const char c) {
-        return c == '+' || c == '-' || c == '/' || c == '*' || c == '(' || c ==')';
+        return c == '+' || c == '-' || c == '/' || c == '*' || c == '(' || c ==')' || c == '^';
     }
 
     // Returns if a char is a parenthesis
@@ -56,6 +60,9 @@ namespace StrProcessing {
         if (c == '/' || c == '*') {
             return 1;
         }
+        if (c == '^') {
+            return 2;
+        }
         if (c == '(' || c == ')') {
             return 10;
         } else {
@@ -71,6 +78,9 @@ namespace StrProcessing {
         }
         if (c == '/' || c == '*') {
             return 1;
+        }
+        if (c == '^') {
+            return 2;
         }
         if (c == '(' || c == ')') {
             return 10;
@@ -110,10 +120,17 @@ namespace StrProcessing {
 
             // NUMBER OPERATIONS
             if (IsDigitNum(c)) {
+                // If the last operator is a ), put a * between it and the number
+                if (i > 0 && str[i - 1] == ')') {
+                    output.push_back("*");
+                }
                 temp.push_back(c);
                 if (i + 1 == str.length() || IsOperator(str[i + 1])) {
                     output.push_back(temp);
                     temp.clear();
+                    if (i + 1 != str.length() && str[i + 1] == '(') {
+                        output.push_back("*");
+                    }
                 }
                 continue;
             }
@@ -185,8 +202,8 @@ namespace StrProcessing {
     }
 
     // Evaluating the postfix notation
-    double EvalPostfix (const std::vector<std::string> &vec) {
-        std::stack<double> stack;
+    long double EvalPostfix (const std::vector<std::string> &vec) {
+        std::stack<long double> stack;
 
         for (int i = 0; i < vec.size(); i++) {
             if (CanConvertToDouble(vec[i])) {
@@ -195,7 +212,7 @@ namespace StrProcessing {
             }
 
             if (IsOperator(vec[i][0])) {
-                double a {0}, b {0};
+                long double a {0}, b {0};
                 b = stack.top();
                 stack.pop();
                 a = stack.top();
@@ -206,7 +223,7 @@ namespace StrProcessing {
         return stack.top();
     }
 
-    double Solve (double a, double b, char op) {
+    long double Solve (long double a, long double b, char op) {
         switch (op) {
             case '+':
                 return a + b;
@@ -217,6 +234,8 @@ namespace StrProcessing {
             case '/':
                 if (b == 0) throw DivisionByZeroError();
                 return a / b;
+            case '^':
+                return std::pow(a, b);
             default:
                 return 0;
         }
