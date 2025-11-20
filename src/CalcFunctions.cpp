@@ -20,9 +20,20 @@ namespace CalcFunctions {
         // Check if user wants to leave
         if (input[0] == 'q') return UserInterrupt;
 
-        if (!StrProcessing::AreParenthesesCorrect(input) || StrProcessing::ContainsInvalidChars(input)) {
+        // Validate input
+        try {
+            StrProcessing::AreParenthesesCorrect(input);
+        } catch (std::exception &e) {
+            std::cout << RED << e.what() << RESET << std::endl;
             return Failed;
         }
+        if (StrProcessing::ContainsInvalidChars(input)) {
+            std::cout << RED << "Invalid character in input!" << RESET << std::endl;
+            return Failed;
+        }
+
+        // Tokenise it, the parse it to postfix
+        // std::vector<std::string> tokens {};
 
         return 0;
     }

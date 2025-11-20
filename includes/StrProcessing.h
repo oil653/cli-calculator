@@ -11,26 +11,64 @@
 #include "../includes/main.h"
 
 namespace StrProcessing {
-    // Removes all whitespaces from a string
-    std::string &RemoveWhitespace(std::string &str);
+    // CUSTOM THROWS
+        class IncorrectParenthesesOrder : public std::exception {
+        public:
+            const char* what() const noexcept override {
+                return "Incorrect parentheses order";
+            }
+        };
 
-    // Checks for invalid parentheses pattern and count
-    bool AreParenthesesCorrect(const std::string &str);
+        class IncorrectParenthesesCount : public std::exception {
+            private:
+                int openingCount;
+                int closingCount;
+            public:
+            IncorrectParenthesesCount(int openingCount, int closingCount) : openingCount(openingCount), closingCount(closingCount) {} ;
 
-    // Checks if input string only has valid characters
-    bool ContainsInvalidChars(const std::string &str);
+            const char* what() const noexcept override {
+                return "Incorrect parentheses count";
+            }
 
-    // Returns true if a string is a valid, supported operator
-    bool IsOperator(const std::string &str);
+            int GetOpeningCount() const {
+                return openingCount;
+            }
+            int GetClosingCount() const {
+                return closingCount;
+            }
+        };
 
-    // Checks if string can be converted to double
-    bool CanConvertToDouble(const std::string &str);
+        class PostfixParsingError : public std::exception {
+            public:
+                const char* what() const noexcept {
+                    return "Failed to convert to Postfix expression";
+                }
+        };
 
-    // Returns a precedence level of an operator
-    int GetPrecedence(const std::string &str);
+    // FUNCTIONS
+        // Removes all whitespaces from a string
+        std::string &RemoveWhitespace(std::string &str);
 
-    // Using a Shunting Yard algorithm, tokenise a vector of operators and numbers (as strings) to postfix
-    std::vector<std::string> InfixToPostfix(const std::vector<std::string> &vec);
+        // Checks for invalid parentheses patterns and count
+        void AreParenthesesCorrect(const std::string &str);
+
+        // Returns if a string only contains valid characters
+        bool ContainsInvalidChars(const std::string &str);
+
+        // Returns if a char is a supported operator or parenthesis
+        bool IsOperator(const char c);
+
+        // Returns a precedence level of an operator
+        int GetOperatorPrecedence(const char c);
+
+            // Returns the precedence of the operator in str[0]
+            int GetOperatorPrecedence(const std::string &str);
+
+        // Checks if string can be converted to a double
+        bool CanConvertToDouble(const std::string &str);
+
+        // Using a Shunting Yard algorithm, tokenise a vector of operators and numbers (as strings) to postfix
+        std::vector<std::string> InfixToPostfix(const std::vector<std::string> &vec);
 }
 
 #endif
