@@ -9,16 +9,29 @@ namespace CalcFunctions {
     };
 
     std::string GetInput() {
-        std::cout << "Be a good boy, and enter the stuff you wanna do >_< Enter q to quit\n> ";
+        std::cout << "\n> ";
         std::string input;
         std::getline(std::cin, input);
         return input;
+    }
+
+    void PrintHelp() {
+        std::cout << "Calculator thingy - a simple cli calculator\n" << std::endl;
+        std::cout << "Supported operators: + - / * ( )" << std::endl;
+        std::cout << "Additional info:\n\t\tBoth . and , are supported for decimal markers"
+                     "\n\t\tA decimal marker without a number before it is interpreted as 0.x"
+                     "\n\t\tWhitespace doesn't matter"
+        << std::endl;
     }
 
     int ProcessInput(std::string &input) {
         StrProcessing::RemoveWhitespace(input);
         // Check if user wants to leave
         if (input[0] == 'q') return UserInterrupt;
+        if (input[0] == 'h') {
+            PrintHelp();
+            return Normal;
+        };
 
         // Validate input
         try {
@@ -32,14 +45,25 @@ namespace CalcFunctions {
             return Failed;
         }
 
-        // Tokenise input, then parse it to postfix
-        std::vector<std::string> postfix {StrProcessing::InfixToPostfix(StrProcessing::Tokenize(input))};
+        // Tokenise the string, make it postfix, evaluate it
+        double result {0};
+        try {
+             result = StrProcessing::EvalPostfix(StrProcessing::InfixToPostfix(StrProcessing::Tokenize(input)));
+        } catch (StrProcessing::DivisionByZeroError &e) {
+            std::cout << RED << e.what() << RESET << std::endl;
+            return Failed;
+        } catch (std::exception &e) {
+            std::cout << RED << e.what() << RESET << std::endl;
+        }
+
+        std::cout << input << "= " <<  result << std::endl;
 
         return 0;
     }
 
     int CalcLoop() {
         int status {0};
+        std::cout << "WELCOME TO CALCULATOR LOOKING THING\nPress q to exit, h for help\nEnter an operation" << std::endl;
         while (true) {
             std::string input {GetInput()};
             status = ProcessInput(input);

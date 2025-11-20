@@ -13,6 +13,9 @@ namespace CalcFunctions {
 
     // A loop that runs until user exits, and calls ProcessInput
     int CalcLoop();
+
+    // A simple function that prints helps and supported operators
+    void PrintHelp();
 }
 
 #endif

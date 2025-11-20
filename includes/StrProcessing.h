@@ -45,6 +45,13 @@ namespace StrProcessing {
                 }
         };
 
+        class DivisionByZeroError : public std::exception {
+            public:
+            const char* what() const noexcept {
+                return "Division by zero is not defined";
+            }
+        };
+
     // FUNCTIONS
         // Removes all whitespaces from a string
         std::string &RemoveWhitespace(std::string &str);
@@ -78,6 +85,12 @@ namespace StrProcessing {
 
         // Using a Shunting Yard algorithm, tokenise a vector of operators and numbers (as strings) to postfix
         std::vector<std::string> InfixToPostfix(const std::vector<std::string> &vec);
+
+        // Evaluating the postfix notation
+        double EvalPostfix (const std::vector<std::string> &vec);
+
+        // Solve a mathematical operation between 2 numbers
+        double Solve (double a, double b, char op);
 }
 
 #endif

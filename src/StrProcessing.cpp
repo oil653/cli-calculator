@@ -42,7 +42,7 @@ namespace StrProcessing {
         return c == '(' || c ==')';
     }
 
-    // Returns if an char is a number
+    // Returns if a char is a number
     bool IsDigitNum(const char c) {
         unsigned char uc {static_cast<unsigned char>(c)};
         return uc >= '0' && uc <= '9';
@@ -182,6 +182,44 @@ namespace StrProcessing {
             stack.pop();
         }
         return output;
+    }
+
+    // Evaluating the postfix notation
+    double EvalPostfix (const std::vector<std::string> &vec) {
+        std::stack<double> stack;
+
+        for (int i = 0; i < vec.size(); i++) {
+            if (CanConvertToDouble(vec[i])) {
+                stack.push(std::stod(vec[i]));
+                continue;
+            }
+
+            if (IsOperator(vec[i][0])) {
+                double a {0}, b {0};
+                b = stack.top();
+                stack.pop();
+                a = stack.top();
+                stack.pop();
+                stack.push(Solve(a, b, vec[i][0]));
+            }
+        }
+        return stack.top();
+    }
+
+    double Solve (double a, double b, char op) {
+        switch (op) {
+            case '+':
+                return a + b;
+            case '-':
+                return a - b;
+            case '*':
+                return a * b;
+            case '/':
+                if (b == 0) throw DivisionByZeroError();
+                return a / b;
+            default:
+                return 0;
+        }
     }
 
 }
