@@ -58,6 +58,12 @@ namespace StrProcessing {
         // Returns if a char is a supported operator or parenthesis
         bool IsOperator(const char c);
 
+        // Returns if a char is a parenthesis
+        bool IsParenthesis(const char c);
+
+        // Returns if an char is a number
+        bool IsDigitNum(const char c);
+
         // Returns a precedence level of an operator
         int GetOperatorPrecedence(const char c);
 
@@ -66,6 +72,9 @@ namespace StrProcessing {
 
         // Checks if string can be converted to a double
         bool CanConvertToDouble(const std::string &str);
+
+        // Tokenize a string into a vector
+        std::vector<std::string> Tokenize(const std::string &str);
 
         // Using a Shunting Yard algorithm, tokenise a vector of operators and numbers (as strings) to postfix
         std::vector<std::string> InfixToPostfix(const std::vector<std::string> &vec);

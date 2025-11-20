@@ -32,8 +32,8 @@ namespace CalcFunctions {
             return Failed;
         }
 
-        // Tokenise it, the parse it to postfix
-        // std::vector<std::string> tokens {};
+        // Tokenise input, then parse it to postfix
+        std::vector<std::string> postfix {StrProcessing::InfixToPostfix(StrProcessing::Tokenize(input))};
 
         return 0;
     }

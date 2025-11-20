@@ -37,6 +37,17 @@ namespace StrProcessing {
         return c == '+' || c == '-' || c == '/' || c == '*' || c == '(' || c ==')';
     }
 
+    // Returns if a char is a parenthesis
+    bool IsParenthesis(const char c) {
+        return c == '(' || c ==')';
+    }
+
+    // Returns if an char is a number
+    bool IsDigitNum(const char c) {
+        unsigned char uc {static_cast<unsigned char>(c)};
+        return uc >= '0' && uc <= '9';
+    }
+
     // Returns a precedence level of an operator
     int GetOperatorPrecedence(const char c) {
         if (c == '+' || c == '-') {
@@ -68,7 +79,6 @@ namespace StrProcessing {
         }
     }
 
-
     // Checks if string is a valid double
     bool CanConvertToDouble(const std::string &str) {
         try {
@@ -77,6 +87,49 @@ namespace StrProcessing {
         } catch (std::exception &e) {
             return false;
         }
+    }
+
+    // Tokenize a string into a vector
+    std::vector<std::string> Tokenize(const std::string &str) {
+        std::vector<std::string> output;
+        std::string temp;
+
+        for (int i = 0; i < str.length(); i++) {
+            unsigned char c {static_cast<unsigned char>(str[i])};
+            // DECIMAL MARK CHECK
+            if (c == ',' || c == '.') {
+                // Assume 0 before empty decimal marks
+                if (temp.empty()) {
+                    temp.push_back('0');
+                    temp.push_back('.');
+                    continue;
+                }
+                temp.push_back('.');
+                continue;
+            }
+
+            // NUMBER OPERATIONS
+            if (IsDigitNum(c)) {
+                temp.push_back(c);
+                if (i + 1 == str.length() || IsOperator(str[i + 1])) {
+                    output.push_back(temp);
+                    temp.clear();
+                }
+                continue;
+            }
+
+            // CHECK IF A NUMBER IS NEGATIVE
+            if (c == '-' && (i == 0 || IsOperator(str[i - 1])) && temp.empty()) {
+                temp.push_back('-');
+                continue;
+            }
+
+            // OTHER OPERATOR HANDLE
+            if (IsOperator(str[i])) {
+                output.push_back(std::string(1, str[i]));
+            }
+        }
+        return output;
     }
 
     // Using a Shunting Yard algorithm, tokenise a vector of operators and numbers (as strings) to postfix
